@@ -347,6 +347,354 @@ elif st.session_state.page == "Health Calculator":
             elif calorie_age <= 50:
                 minimum = 1800
                 maximum = 3000
+import streamlit as st
+import matplotlib.pyplot as plt
+
+st.set_page_config(page_title="Health and Nutrition", layout="centered")
+
+if "page" not in st.session_state:
+    st.session_state.page = "Home"
+
+if st.session_state.page == "Home":
+
+    st.title("Health and Nutrition")
+    st.write("Choose a section to continue.")
+    st.header("Choose an option")
+
+    if st.button("Health Calculator", use_container_width=True):
+        st.session_state.page = "Health Calculator"
+        st.rerun()
+
+    if st.button("Diet Calculator", use_container_width=True):
+        st.session_state.page = "Diet Calculator"
+        st.rerun()
+
+    if st.button("Healthy Food vs Junk Food", use_container_width=True):
+        st.session_state.page = "Healthy Food vs Junk Food"
+        st.rerun()
+
+elif st.session_state.page == "Health Calculator":
+
+    if st.button("← Back to Home"):
+        st.session_state.page = "Home"
+        st.rerun()
+
+    st.title("Health Calculator")
+    st.write("BMI Calculator, Weight Checker and Daily Food Calorie Calculator")
+
+    # 1. BMI CALCULATOR
+
+    st.header("1. BMI Calculator")
+
+    age = st.number_input(
+        "Enter your age",
+        min_value=1,
+        max_value=100,
+        value=None
+    )
+
+    weight = st.number_input(
+        "Enter your weight (kg)",
+        min_value=1.0,
+        max_value=300.0,
+        value=None
+    )
+
+    height = st.number_input(
+        "Enter your height (cm)",
+        min_value=50,
+        max_value=250,
+        value=None
+    )
+
+    if st.button("Calculate BMI"):
+
+        if age is None or weight is None or height is None:
+            st.warning("Please enter all the details.")
+
+        else:
+            height_m = height / 100
+            bmi = weight / (height_m * height_m)
+
+            st.write("Your BMI is:", round(bmi, 2))
+
+            if bmi < 18.5:
+                category = "Below usual range"
+            elif bmi < 25:
+                category = "Usual range"
+            elif bmi < 30:
+                category = "Above usual range"
+            else:
+                category = "Well above usual range"
+
+            st.write("Your category is:", category)
+
+            categories = [
+                "Below usual range",
+                "Usual range",
+                "Above usual range",
+                "Well above usual range"
+            ]
+
+            values = [15, 55, 20, 10]
+
+            explode = []
+
+            for item in categories:
+                if item == category:
+                    explode.append(0.1)
+                else:
+                    explode.append(0)
+
+            fig, ax = plt.subplots()
+
+            ax.pie(
+                values,
+                labels=categories,
+                explode=explode,
+                autopct="%1.0f%%",
+                startangle=90
+            )
+
+            ax.set_title("BMI Categories")
+
+            st.pyplot(fig)
+            plt.close(fig)
+
+            st.info(
+                "The highlighted part shows your category. "
+                "The percentages are illustrative values for the "
+                "project and are not actual population statistics."
+            )
+
+            if age < 20:
+                st.warning(
+                    "For people below 20, BMI is normally interpreted "
+                    "using age- and sex-specific growth charts."
+                )
+
+    # 2. WEIGHT CHECKER
+
+    st.divider()
+    st.header("2. Weight Checker")
+
+    weight_age = st.number_input(
+        "Enter your age",
+        min_value=1,
+        max_value=100,
+        value=None,
+        key="weight_age"
+    )
+
+    weight_value = st.number_input(
+        "Enter your weight (kg)",
+        min_value=1.0,
+        max_value=300.0,
+        value=None,
+        key="weight_value"
+    )
+
+    if st.button("Check Weight"):
+
+        if weight_age is None or weight_value is None:
+            st.warning("Please enter age and weight.")
+
+        else:
+
+            if weight_age < 20:
+
+                if weight_value < 40:
+                    weight_category = "Underweight"
+                elif weight_value <= 60:
+                    weight_category = "Normal"
+                else:
+                    weight_category = "Above average"
+
+            elif weight_age <= 30:
+
+                if weight_value < 50:
+                    weight_category = "Underweight"
+                elif weight_value <= 70:
+                    weight_category = "Normal"
+                else:
+                    weight_category = "Above average"
+
+            elif weight_age <= 40:
+
+                if weight_value < 55:
+                    weight_category = "Underweight"
+                elif weight_value <= 75:
+                    weight_category = "Normal"
+                else:
+                    weight_category = "Above average"
+
+            elif weight_age <= 50:
+
+                if weight_value < 55:
+                    weight_category = "Underweight"
+                elif weight_value <= 80:
+                    weight_category = "Normal"
+                else:
+                    weight_category = "Above average"
+
+            elif weight_age <= 60:
+
+                if weight_value < 55:
+                    weight_category = "Underweight"
+                elif weight_value <= 80:
+                    weight_category = "Normal"
+                else:
+                    weight_category = "Above average"
+
+            else:
+
+                if weight_value < 50:
+                    weight_category = "Underweight"
+                elif weight_value <= 80:
+                    weight_category = "Normal"
+                else:
+                    weight_category = "Above average"
+
+            st.write("Your category is:", weight_category)
+
+            categories = [
+                "Underweight",
+                "Normal",
+                "Above average"
+            ]
+
+            values = [15, 60, 25]
+
+            explode = []
+
+            for item in categories:
+                if item == weight_category:
+                    explode.append(0.1)
+                else:
+                    explode.append(0)
+
+            fig, ax = plt.subplots()
+
+            ax.pie(
+                values,
+                labels=categories,
+                explode=explode,
+                autopct="%1.0f%%",
+                startangle=90
+            )
+
+            ax.set_title("Weight Categories")
+
+            st.pyplot(fig)
+            plt.close(fig)
+
+            st.info(
+                "The highlighted part shows your category. "
+                "The percentages are illustrative values for the project."
+            )
+
+            if weight_category == "Underweight":
+
+                st.write("### General Healthy Habits")
+                st.write("- Eat regular balanced meals.")
+                st.write("- Include rice, roti, dal, beans, eggs, milk, fruits and vegetables.")
+                st.write("- Avoid skipping meals.")
+                st.write("- Get enough sleep.")
+
+            elif weight_category == "Normal":
+
+                st.write("### General Healthy Habits")
+                st.write("- Eat a balanced diet.")
+                st.write("- Include vegetables and fruits.")
+                st.write("- Include whole grains and protein-rich foods.")
+                st.write("- Drink enough water.")
+                st.write("- Stay physically active.")
+
+            else:
+
+                st.write("### General Healthy Habits")
+                st.write("- Eat balanced meals.")
+                st.write("- Include vegetables and fruits.")
+                st.write("- Include whole grains and protein-rich foods.")
+                st.write("- Limit highly processed foods and foods with a lot of added sugar.")
+                st.write("- Stay physically active.")
+
+    # 3. DAILY FOOD CALORIE CALCULATOR
+
+    st.divider()
+    st.header("3. Daily Food Calorie Calculator")
+
+    st.write(
+        "Enter the food you ate during the day and its estimated calories."
+    )
+
+    calorie_age = st.number_input(
+        "Enter your age",
+        min_value=1,
+        max_value=100,
+        value=None,
+        key="calorie_age"
+    )
+
+    total_calories = 0
+
+    for i in range(1, 6):
+
+        st.subheader("Food " + str(i))
+
+        food_name = st.text_input(
+            "Enter food name",
+            key="food_name" + str(i)
+        )
+
+        calories = st.number_input(
+            "Enter estimated calories (kcal)",
+            min_value=0.0,
+            value=0.0,
+            key="food_calories" + str(i)
+        )
+
+        total_calories += calories
+
+    if st.button("Calculate Total Calories"):
+
+        if calorie_age is None:
+            st.warning("Please enter your age.")
+
+        elif total_calories == 0:
+            st.warning("Please enter the food items and their calories.")
+
+        else:
+
+            st.write(
+                "Total daily calories:",
+                round(total_calories),
+                "kcal"
+            )
+
+            if calorie_age <= 3:
+                minimum = 1000
+                maximum = 1400
+
+            elif calorie_age <= 8:
+                minimum = 1200
+                maximum = 2000
+
+            elif calorie_age <= 13:
+                minimum = 1400
+                maximum = 2600
+
+            elif calorie_age <= 18:
+                minimum = 1800
+                maximum = 3200
+
+            elif calorie_age <= 30:
+                minimum = 1800
+                maximum = 3000
+
+            elif calorie_age <= 50:
+                minimum = 1800
+                maximum = 3000
 
             elif calorie_age <= 60:
                 minimum = 1600
@@ -459,7 +807,144 @@ elif st.session_state.page == "Diet Calculator":
         st.rerun()
 
     st.title("Diet Calculator")
-    st.write("This section will be created next.")
+    st.write("Calculate your BMI and explore balanced meal recommendations.")
+
+    st.header("Enter Your Details")
+
+    diet_age = st.number_input(
+        "Enter your age",
+        min_value=1,
+        max_value=100,
+        value=None,
+        key="diet_age"
+    )
+
+    diet_weight = st.number_input(
+        "Enter your weight (kg)",
+        min_value=1.0,
+        max_value=300.0,
+        value=None,
+        key="diet_weight"
+    )
+
+    diet_height = st.number_input(
+        "Enter your height (cm)",
+        min_value=50,
+        max_value=250,
+        value=None,
+        key="diet_height"
+    )
+
+    if st.button("Generate Diet Plan"):
+
+        if diet_age is None or diet_weight is None or diet_height is None:
+            st.warning("Please enter all your details.")
+
+        else:
+
+            height_m = diet_height / 100
+            bmi = diet_weight / (height_m * height_m)
+
+            st.subheader("Your BMI Result")
+            st.write("Your BMI is:", round(bmi, 2))
+
+            if diet_age < 20:
+                group = "Balanced"
+                st.info(
+                    "BMI below 20 years requires age- and sex-specific "
+                    "growth charts. The following is a general balanced "
+                    "meal plan, not a BMI-based prescription."
+                )
+
+            elif bmi < 18.5:
+                group = "Group 1"
+
+            elif bmi < 25:
+                group = "Group 2"
+
+            else:
+                group = "Group 3"
+
+            diets = {
+
+                "Group 1": [
+                    ("Breakfast: Idli, sambar and milk", 350),
+                    ("Lunch: Rice, dal, vegetables and curd", 600),
+                    ("Dinner: Chapati, paneer curry and vegetables", 550),
+                    ("Optional snack: Banana and nuts", 200)
+                ],
+
+                "Group 2": [
+                    ("Breakfast: Dosa, sambar and fruit", 350),
+                    ("Lunch: Rice, dal, vegetables and curd", 600),
+                    ("Dinner: Chapati, egg curry and vegetables", 550),
+                    ("Optional snack: Apple and nuts", 180)
+                ],
+
+                "Group 3": [
+                    ("Breakfast: Vegetable poha and milk", 350),
+                    ("Lunch: Rice, dal, vegetables and curd", 600),
+                    ("Dinner: Roti, paneer and vegetable curry", 550),
+                    ("Optional snack: Seasonal fruit", 100)
+                ],
+
+                "Balanced": [
+                    ("Breakfast: Idli, sambar and fruit", 350),
+                    ("Lunch: Rice, dal, vegetables and curd", 600),
+                    ("Dinner: Chapati, paneer curry and vegetables", 550),
+                    ("Optional snack: Fruit and nuts", 180)
+                ]
+            }
+
+            st.header("Balanced Meal Recommendations")
+
+            if group == "Balanced":
+                st.write("General balanced meal suggestions:")
+            else:
+                st.write("Educational BMI group:", group)
+
+            st.subheader("1. Breakfast")
+            st.write(diets[group][0][0])
+            st.caption(
+                "Estimated calories: "
+                + str(diets[group][0][1]) + " kcal"
+            )
+
+            st.subheader("2. Lunch")
+            st.write(diets[group][1][0])
+            st.caption(
+                "Estimated calories: "
+                + str(diets[group][1][1]) + " kcal"
+            )
+
+            st.subheader("3. Dinner")
+            st.write(diets[group][2][0])
+            st.caption(
+                "Estimated calories: "
+                + str(diets[group][2][1]) + " kcal"
+            )
+
+            st.subheader("Optional Snacks")
+            st.write(diets[group][3][0])
+            st.caption(
+                "Estimated calories: "
+                + str(diets[group][3][1]) + " kcal"
+            )
+
+            st.divider()
+
+            st.header("Healthy Diet Tips")
+            st.write("- Eat regular and balanced meals.")
+            st.write("- Include fruits and vegetables.")
+            st.write("- Include protein-rich foods.")
+            st.write("- Drink enough water.")
+            st.write("- Maintain regular sleep habits.")
+
+            st.info(
+                "Calorie values are approximate and vary with portion size "
+                "and preparation. BMI is a screening measure, not a diagnosis. "
+                "These meal examples are not personalised calorie prescriptions."
+            )
 
 elif st.session_state.page == "Healthy Food vs Junk Food":
 
