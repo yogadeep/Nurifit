@@ -598,6 +598,7 @@ elif st.session_state.page == "Diet Calculator":
                 "These meal examples are not personalised calorie prescriptions."
             )
 
+
 elif st.session_state.page == "Healthy Food vs Junk Food":
 
     if st.button("← Back to Home"):
@@ -605,5 +606,99 @@ elif st.session_state.page == "Healthy Food vs Junk Food":
         st.rerun()
 
     st.title("Healthy Food vs Junk Food")
-    st.write("This section will be created next.")
-            
+    st.write("Identify whether the following foods are Healthy or Junk!")
+
+    foods = [
+        ("Orange", "Healthy",
+         "Oranges contain Vitamin C, which supports the immune system. They also provide fibre."),
+
+        ("Potato Chips", "Junk",
+         "Potato chips often contain high amounts of salt and fat. Eating them frequently is not recommended."),
+
+        ("Apple", "Healthy",
+         "Apples contain dietary fibre, which supports digestion."),
+
+        ("Soft Drink", "Junk",
+         "Sugary soft drinks often contain high amounts of added sugar and provide very little nutritional value."),
+
+        ("Broccoli", "Healthy",
+         "Broccoli contains vitamins, minerals and fibre that support good health.")
+    ]
+
+    if "food_question" not in st.session_state:
+        st.session_state.food_question = 0
+
+    if "food_score" not in st.session_state:
+        st.session_state.food_score = 0
+
+    if "food_submitted" not in st.session_state:
+        st.session_state.food_submitted = False
+
+    if st.session_state.food_question < len(foods):
+
+        question_number = st.session_state.food_question
+        food_name, correct_answer, information = foods[question_number]
+
+        st.subheader("Question " + str(question_number + 1) + " of 5")
+
+        st.header(food_name)
+
+        st.write("Is this food Healthy or Junk?")
+
+        if not st.session_state.food_submitted:
+
+            answer = st.radio(
+                "Choose your answer:",
+                ["Healthy", "Junk"],
+                key="food_answer_" + str(question_number)
+            )
+
+            if st.button("Submit Answer"):
+
+                st.session_state.food_submitted = True
+
+                if answer == correct_answer:
+                    st.session_state.food_score += 1
+
+                st.rerun()
+
+        else:
+
+            selected_answer = st.session_state[
+                "food_answer_" + str(question_number)
+            ]
+
+            if selected_answer == correct_answer:
+                st.success("Correct Answer!")
+            else:
+                st.error("Incorrect Answer!")
+
+            st.write("Correct Answer:", correct_answer)
+
+            st.subheader("Nutritional Information")
+            st.write(information)
+
+            if question_number < 4:
+
+                if st.button("Next Question"):
+                    st.session_state.food_question += 1
+                    st.session_state.food_submitted = False
+                    st.rerun()
+
+            else:
+
+                st.success("Quiz Completed!")
+
+                st.write(
+                    "Your Score:",
+                    str(st.session_state.food_score) + " / 5"
+                )
+
+                if st.button("Restart Quiz"):
+                    st.session_state.food_question = 0
+                    st.session_state.food_score = 0
+                    st.session_state.food_submitted = False
+                    st.rerun()
+
+    else:
+        st.write("Quiz Completed!")
