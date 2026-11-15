@@ -598,7 +598,6 @@ elif st.session_state.page == "Diet Calculator":
                 "These meal examples are not personalised calorie prescriptions."
             )
 
-
 elif st.session_state.page == "Healthy Food vs Junk Food":
 
     if st.button("← Back to Home"):
@@ -634,13 +633,15 @@ elif st.session_state.page == "Healthy Food vs Junk Food":
     if "food_submitted" not in st.session_state:
         st.session_state.food_submitted = False
 
+    if "food_selected_answer" not in st.session_state:
+        st.session_state.food_selected_answer = ""
+
     if st.session_state.food_question < len(foods):
 
         question_number = st.session_state.food_question
         food_name, correct_answer, information = foods[question_number]
 
         st.subheader("Question " + str(question_number + 1) + " of 5")
-
         st.header(food_name)
 
         st.write("Is this food Healthy or Junk?")
@@ -655,6 +656,7 @@ elif st.session_state.page == "Healthy Food vs Junk Food":
 
             if st.button("Submit Answer"):
 
+                st.session_state.food_selected_answer = answer
                 st.session_state.food_submitted = True
 
                 if answer == correct_answer:
@@ -664,9 +666,7 @@ elif st.session_state.page == "Healthy Food vs Junk Food":
 
         else:
 
-            selected_answer = st.session_state[
-                "food_answer_" + str(question_number)
-            ]
+            selected_answer = st.session_state.food_selected_answer
 
             if selected_answer == correct_answer:
                 st.success("Correct Answer!")
@@ -683,6 +683,7 @@ elif st.session_state.page == "Healthy Food vs Junk Food":
                 if st.button("Next Question"):
                     st.session_state.food_question += 1
                     st.session_state.food_submitted = False
+                    st.session_state.food_selected_answer = ""
                     st.rerun()
 
             else:
@@ -698,7 +699,9 @@ elif st.session_state.page == "Healthy Food vs Junk Food":
                     st.session_state.food_question = 0
                     st.session_state.food_score = 0
                     st.session_state.food_submitted = False
+                    st.session_state.food_selected_answer = ""
                     st.rerun()
 
     else:
         st.write("Quiz Completed!")
+        
